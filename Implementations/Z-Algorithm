@@ -1,0 +1,37 @@
+#include<bits/stdc++.h>
+#pragma GCC optimize ("Ofast")
+#pragma GCC target ("avx2")
+#define endl "\n"
+
+using namespace std;
+
+vector<int> z_function(string s)
+{
+    int n = (int)s.size(), k, l = 0, r = 0;
+    vector<int> z(n);
+    for(int i = 1; i < n; ++i)
+    {
+        if(i <= r) k = min(r - i + 1, z[i - l]);
+        else k = 0;
+        while(i + k < n && s[k] == s[i + k]) k++;
+        z[i] = k;
+        if(i + k - 1 > r) l = i, r = i + k - 1;
+    }
+    return z;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    vector<int> ZF;
+    string s;
+    cin >> s;
+    int n = s.size();
+    ZF = z_function(s);
+    for(int i = 0; i < n; ++i) cout << ZF[i] << " ";
+    cout << endl;
+    return 0;
+}
