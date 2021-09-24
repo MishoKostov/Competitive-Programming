@@ -1,4 +1,6 @@
 #include<bits/stdc++.h>
+#pragma GCC optimize ("Ofast")
+#pragma GCC target ("avx2")
 #define endl "\n"
 
 using namespace std;
@@ -61,6 +63,8 @@ int main()
     SuffixArray SA(s);
     n = s.size();
     for(int i = 1; i <= n; ++i) cout << SA.sa[i] << " ";
+    cout << endl;
+    for(int i = 1; i < n; ++i) cout << SA.lcp[i] << " ";
     cout << endl;
 	return 0;
 }
