@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+
+struct SuffixArray
+{
+    string s;
+    int n;
+    vector<int> sa, isa, lcp;
+    SuffixArray(string _s)
+    {
+        s = _s;
+        s += "$";
+        n = s.size();
+        genSA();
+        genLCP();
+    }
+    void genSA()
+    {
+        vector<int> pos(n), sas(n), is(n);
+        sa.resize(n, 0), isa.resize(n, 0);
+        for(int i = 0; i < n; ++i) sa[i] = i;
+        sort(sa.begin(), sa.end(), [&](int o1, int o2) {return s[o1] < s[o2];});
+        for(int i = 1; i < n; ++i) isa[sa[i]] = (s[sa[i - 1]] != s[sa[i]]) ? i : isa[sa[i - 1]];
+        for(int len = 1; len < n; len *= 2)
+        {
+            for(int i = 0; i < n; ++i) sas[i] = sa[i], pos[i] = i, is[i] = isa[i];
+            for(int i = 0; i < n; ++i)
+            {
+                int w = (sas[i] - len < 0) ? sas[i] - len + n : sas[i] - len;
+                sa[pos[is[w]]++] = w;
+            }
+            for(int i = 1; i < n; ++i) isa[sa[i]] = (is[sa[i - 1]] == is[sa[i]] && is[(sa[i - 1] + len) % n] == is[(sa[i] + len) % n]) ? isa[sa[i - 1]] : i;
+        }
+    }
+    void genLCP()
+    {
+        int k = 0;
+        lcp.resize(n - 1);
+        for(int i = 0; i < n - 1; ++i)
+        {
+            int j = sa[isa[i] - 1];
+            while(j + k < n && s[i + k] == s[j + k]) k++;
+            lcp[isa[i] - 1] = k;
+            if(k) k--;
+        }
+    }
+};
+
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+
+	int n;
+    string s;
+    cin >> s;
+    SuffixArray SA(s);
+    n = s.size();
+    for(int i = 1; i <= n; ++i) cout << SA.sa[i] << " ";
+    cout << endl;
+	return 0;
+}
