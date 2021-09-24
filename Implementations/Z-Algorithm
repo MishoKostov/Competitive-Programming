@@ -1,3 +1,11 @@
+/*
+ * Description: Calculates z-function
+ * Time Complexity: O(n)
+ * Sourse: cp-algorithms
+ * Verification:
+        * none
+ */
+
 #include<bits/stdc++.h>
 #pragma GCC optimize ("Ofast")
 #pragma GCC target ("avx2")
@@ -11,11 +19,11 @@ vector<int> z_function(string s)
     vector<int> z(n);
     for(int i = 1; i < n; ++i)
     {
-        if(i <= r) k = min(r - i + 1, z[i - l]);
+        if(i <= r) k = min(r - i + 1, z[i - l]); // initializing the minimal value of z-function for i-th element.
         else k = 0;
-        while(i + k < n && s[k] == s[i + k]) k++;
+        while(i + k < n && s[k] == s[i + k]) k++; // trivial way.
         z[i] = k;
-        if(i + k - 1 > r) l = i, r = i + k - 1;
+        if(i + k - 1 > r) l = i, r = i + k - 1; // updating rightmost segment.
     }
     return z;
 }
