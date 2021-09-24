@@ -53,11 +53,11 @@ struct SuffixArray
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
-	int n;
+    int n;
     string s;
     cin >> s;
     SuffixArray SA(s);
@@ -66,5 +66,5 @@ int main()
     cout << endl;
     for(int i = 1; i < n; ++i) cout << SA.lcp[i] << " ";
     cout << endl;
-	return 0;
+    return 0;
 }
