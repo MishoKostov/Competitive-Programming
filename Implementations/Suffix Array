@@ -1,3 +1,11 @@
+/*
+ * Description: Sort suffixes
+ * Time Complexity: O(n log n)
+ * Sourse: Benq
+ * Verification:
+        * https://judge.yosupo.jp/problem/suffixarray
+ */
+
 #include<bits/stdc++.h>
 #pragma GCC optimize ("Ofast")
 #pragma GCC target ("avx2")
@@ -5,7 +13,7 @@
 
 using namespace std;
 
-struct SuffixArray
+struct SuffixArray // it's better to use structures in cases when you need to store SuffixArray array.
 {
     string s;
     int n;
@@ -13,7 +21,7 @@ struct SuffixArray
     SuffixArray(string _s)
     {
         s = _s;
-        s += "$";
+        s += "$"; // adding the needed separator.
         n = s.size();
         genSA();
         genLCP();
@@ -22,30 +30,30 @@ struct SuffixArray
     {
         vector<int> pos(n), sas(n), is(n);
         sa.resize(n, 0), isa.resize(n, 0);
-        for(int i = 0; i < n; ++i) sa[i] = i;
-        sort(sa.begin(), sa.end(), [&](int o1, int o2) {return s[o1] < s[o2];});
-        for(int i = 1; i < n; ++i) isa[sa[i]] = (s[sa[i - 1]] != s[sa[i]]) ? i : isa[sa[i - 1]];
+        for(int i = 0; i < n; ++i) sa[i] = i; // the sa array is permutation by itself.
+        sort(sa.begin(), sa.end(), [&](int o1, int o2) {return s[o1] < s[o2];}); // sorting sa array according to string s.
+        for(int i = 1; i < n; ++i) isa[sa[i]] = (s[sa[i - 1]] != s[sa[i]]) ? i : isa[sa[i - 1]]; // initializing isa array. isa[i] shows how many suffixes are smaller than suffix starting at i-th position.
         for(int len = 1; len < n; len *= 2)
         {
-            for(int i = 0; i < n; ++i) sas[i] = sa[i], pos[i] = i, is[i] = isa[i];
+            for(int i = 0; i < n; ++i) sas[i] = sa[i], pos[i] = i, is[i] = isa[i]; //initializing auxiliary arrays for the transition.
             for(int i = 0; i < n; ++i)
             {
-                int w = (sas[i] - len < 0) ? sas[i] - len + n : sas[i] - len;
+                int w = (sas[i] - len < 0) ? sas[i] - len + n : sas[i] - len; // sorting i-th suffix according to its second part and then updating its position in sa array.
                 sa[pos[is[w]]++] = w;
             }
-            for(int i = 1; i < n; ++i) isa[sa[i]] = (is[sa[i - 1]] == is[sa[i]] && is[(sa[i - 1] + len) % n] == is[(sa[i] + len) % n]) ? isa[sa[i - 1]] : i;
+            for(int i = 1; i < n; ++i) isa[sa[i]] = (is[sa[i - 1]] == is[sa[i]] && is[(sa[i - 1] + len) % n] == is[(sa[i] + len) % n]) ? isa[sa[i - 1]] : i; // updating isa array.
         }
     }
     void genLCP()
     {
-        int k = 0;
+        int k = 0; // current length of LCP of suffix on i-th position and first suffix smaller  than i-th.
         lcp.resize(n - 1);
-        for(int i = 0; i < n - 1; ++i)
+        for(int i = 0; i < n - 1; ++i) // we don't check last suffix "$", because it's the smallest.
         {
             int j = sa[isa[i] - 1];
-            while(j + k < n && s[i + k] == s[j + k]) k++;
+            while(j + k < n && s[i + k] == s[j + k]) k++; // trivial way.
             lcp[isa[i] - 1] = k;
-            if(k) k--;
+            if(k) k--; // transitioning to i+1-th sufiix.
         }
     }
 };
